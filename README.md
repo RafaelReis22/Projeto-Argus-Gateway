@@ -55,19 +55,20 @@ graph TD
 
 ## 📄 Architectural Decision Records (ADR)
 
-> [!IMPORTANT]
-> ### Por que Row-Level Security (RLS)?
-> A abordagem tradicional de isolamento de dados é frágil e propensa a erros humanos.
+### 🛡️ Isolamento Nativo (RLS vs Filtros)
 
-| Abordagem | Implementação | Risco |
-| :--- | :--- | :--- |
-| **Tradicional** | Filtros no código Java (`WHERE tenant_id = ?`) | **ALTO.** Um desenvolvedor pode esquecer o filtro em uma nova query. |
-| **Expert (RLS)** | Políticas nativas no Banco de Dados | **ZERO.** O banco isola os dados mesmo se o código falhar. |
+A maioria dos sistemas tenta isolar dados no código Java (`WHERE tenant_id = ?`). Isso é fatal se um desenvolvedor esquecer o filtro em uma nova query.
 
-#### Como funciona no Postgres
+No **ARGUS Gateway**, usamos **Row-Level Security (RLS)**:
+
+- **Segurança Garantida:** O banco de dados bloqueia o acesso mesmo se o código falhar.
+- **Eficiência:** O isolamento acontece na camada mais profunda da persistência.
+- **Expertise:** Demonstra domínio de recursos avançados do PostgreSQL.
+
+#### Exemplo de Política no Postgres
 
 ```sql
--- Exemplo da nossa política de segurança
+-- O banco impõe o filtro automaticamente por Tenant
 CREATE POLICY tenant_isolation_policy ON products
     USING (tenant_id = current_setting('app.current_tenant'));
 ```
