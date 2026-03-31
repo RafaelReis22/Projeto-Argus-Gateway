@@ -64,20 +64,30 @@ graph TD
 Basta um comando para subir todo o ecossistema pronto para ser testado:
 
 ```bash
-# 1. Clone e entre na pasta
-# 2. Suba o cofre blindado
+# Clone e entre na pasta do projeto
+# Suba todo o ecossistema (Gateway, Auth, DB, OPA)
 docker compose up -d --build
-
-
+```
 
 ---
 
 ## 🛠️ Stack Tecnológica
-- **Backend:** Java 21, Spring Boot 3.2, Spring Cloud Gateway.
-- **Segurança:** OPA (Open Policy Agent), Keycloak 24.
-- **Database:** PostgreSQL 16 (RLS Enabled).
-- **Cache/Quota:** Redis 7.
-- **CI/CD:** GitHub Actions (Integrado).
+
+| Camada | Tecnologia | Ícone |
+| :--- | :--- | :--- |
+| **Backend** | Java 21, Spring Boot 3.2 | ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white) |
+| **Gateway** | Spring Cloud Gateway | ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) |
+| **Segurança** | Keycloak 24 & OPA | ![Keycloak](https://img.shields.io/badge/Keycloak-A10000?style=for-the-badge&logo=keycloak&logoColor=white) |
+| **Database** | PostgreSQL 16 (RLS) | ![Postgres](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) |
+| **Cache** | Redis 7 | ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white) |
+
+---
+
+## 🔒 Security Showcase
+O diferencial deste projeto é a **Defesa em Profundidade**. Você pode testar o isolamento tentando acessar dados de um Tenant A com um Token do Tenant B. O sistema bloqueará a requisição em **três níveis**:
+1. **Gateway:** O filtro OPA valida o `tenant_id` no JWT.
+2. **Service:** O `TenantFilter` isola o contexto da thread.
+3. **Banco de Dados:** O **RLS** garante que a query só retorne o que pertence ao Tenant logado.
 
 ---
 
